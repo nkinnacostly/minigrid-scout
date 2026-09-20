@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Minigrid Scout</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" />
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar" aria-label="Area and ranking">
+        <header class="brand">
+          <h1>Minigrid Scout</h1>
+          <p>Find and rank villages for solar mini-grids, from open data.</p>
+        </header>
+
+        <section class="picker" aria-label="Choose an area">
+          <div class="field">
+            <label for="state">State</label>
+            <select id="state" disabled><option>Loading…</option></select>
+          </div>
+          <div class="field">
+            <label for="lga">LGA</label>
+            <select id="lga" disabled></select>
+          </div>
+          <button id="run" class="primary" type="button" disabled>Rank settlements</button>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+          <div class="field wide">
+            <label for="imagery">Map imagery</label>
+            <select id="imagery" disabled></select>
+            <p id="imagery-note" class="hint-line"></p>
+          </div>
+        </section>
+
+        <section id="results" class="results" hidden>
+          <div id="funnel" class="funnel"></div>
+
+          <details id="tune" class="tune">
+            <summary>Adjust the score</summary>
+            <div id="weights" class="weights"></div>
+            <div class="field inline">
+              <label for="min-buildings">Smallest village to rank</label>
+              <select id="min-buildings">
+                <option value="50">50 buildings</option>
+                <option value="100" selected>100 buildings</option>
+                <option value="200">200 buildings</option>
+                <option value="300">300 buildings</option>
+              </select>
+            </div>
+            <button id="reset-weights" class="link" type="button">Reset to defaults</button>
+          </details>
+
+          <div class="list-head">
+            <h2 id="list-title">Ranked settlements</h2>
+            <button id="export" class="ghost" type="button">Export CSV</button>
+          </div>
+          <ol id="ranklist" class="ranklist"></ol>
+        </section>
+
+        <footer class="credits">
+          Buildings, names, schools, clinics, markets: GRID3 Nigeria (CC BY 4.0) · People: WorldPop (CC BY 4.0) ·
+          Roads and power lines © OpenStreetMap contributors (ODbL) · Sun: PVGIS © European Union ·
+          Imagery: Esri World Imagery · Terrain: Re:Earth / Mapterhorn (CC BY 4.0) ·
+          Globe code adapted from God's Eye View (MIT).
+        </footer>
+      </aside>
+
+      <main class="stage">
+        <div id="globe" class="globe" aria-label="3D globe"></div>
+        <div id="tooltip" class="tooltip" hidden></div>
+        <p id="detail-note" class="detail-note" hidden></p>
+        <aside id="brief" class="brief" aria-label="Site brief" hidden></aside>
+      </main>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
