@@ -1,5 +1,5 @@
 import * as grid3 from '../sources/grid3.js';
-import { powerLines, mainRoads, townPoints } from '../sources/overpass.js';
+import { osmLayers } from '../sources/overpass.js';
 import { analyzeSettlements, parseKv } from './settlements.js';
 import { r5 } from './geo.js';
 
@@ -27,12 +27,9 @@ export async function fetchLgaRaw(state, lga, progress = () => {}) {
     grid3.featuresInPolygon(grid3.LAYERS.health, rings, 'facility_name,facility_type,functional'),
     grid3.featuresInPolygon(grid3.LAYERS.markets, rings, 'market_nam'),
   ]);
-  progress('osm', 'Downloading power lines from OpenStreetMap');
-  const power = await powerLines(bbox);
-  progress('osm', 'Downloading main roads from OpenStreetMap');
-  const roads = await mainRoads(bbox);
-  progress('osm', 'Downloading town locations from OpenStreetMap');
-  const towns = await townPoints(bbox);
+  progress('osm', 'Downloading power lines, main roads and towns from OpenStreetMap');
+  const { power, roads, towns } = await osmLayers(bbox, (attempt, attempts) =>
+    progress('osm', `OpenStreetMap is busy, so trying another server (attempt ${attempt} of ${attempts})`));
   return { state, lga, rings, bbox, blocks, names, schools, health, markets, power, roads, towns };
 }
 
