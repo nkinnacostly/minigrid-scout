@@ -39,11 +39,16 @@ export function makeRateLimiter({ windowMs, max, globalMax }) {
 }
 
 /**
- * Client key for rate limiting. Uses the real socket peer address only — we do
- * NOT trust X-Forwarded-For (client-controlled; a rotating value would mint fresh
- * quota and grow the limiter map). This is a localhost dev proxy, so the socket
- * address is the real client.
+ * Client key for rate limiting. Locally this is the socket peer address; we do
+ * NOT trust X-Forwarded-For there (client-controlled; a rotating value would mint
+ * fresh quota and grow the limiter map). Behind a hosting proxy (TRUST_PROXY=1)
+ * every socket is the proxy, so use the last X-Forwarded-For entry: the one the
+ * proxy itself appended, which the client can't forge.
  */
 export function clientKey(req) {
+  if (process.env.TRUST_PROXY === '1') {
+    const last = String(req.headers['x-forwarded-for'] || '').split(',').pop().trim();
+    if (last) return last;
+  }
   return String(req.socket?.remoteAddress || 'local');
 }

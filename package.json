@@ -12,7 +12,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test test/"
+    "test": "node --test test/",
+    "start": "node server.js"
   },
   "dependencies": {
     "cesium": "^1.138.0"

@@ -22,12 +22,13 @@ const friendly = (err) => {
 };
 
 /**
- * Local API for the app, mounted into the Vite dev/preview server.
+ * The app's API as a plain (req, res, next) handler, shared by the Vite
+ * dev/preview servers and the production server (server.js).
  *   GET /api/lgas                      → [{state, lga}]
  *   GET /api/analysis?state=&lga=      → event stream: progress…, then result | failure
  *   GET /api/site?lat=&lon=&r=         → {people, solar, terrain} for one settlement
  */
-export function minigridApi({ cacheDir = path.join(process.cwd(), '.cache'), googleApiKey, ionToken } = {}) {
+export function createApiHandler({ cacheDir = path.join(process.cwd(), '.cache'), googleApiKey, ionToken } = {}) {
   const cache = createCache(cacheDir);
   const analysisLimit = makeRateLimiter({ windowMs: 60_000, max: 6, globalMax: 30 });
   const siteLimit = makeRateLimiter({ windowMs: 60_000, max: 90, globalMax: 400 });
@@ -135,6 +136,12 @@ export function minigridApi({ cacheDir = path.join(process.cwd(), '.cache'), goo
     }
   }
 
+  return handle;
+}
+
+/** Vite plugin that mounts the API into the dev and preview servers. */
+export function minigridApi(options) {
+  const handle = createApiHandler(options);
   return {
     name: 'minigrid-api',
     configureServer(server) { server.middlewares.use(handle); },

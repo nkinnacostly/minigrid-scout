@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: minigrid-scout
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: TRUST_PROXY
+        value: "1"
+      # Optional sharper imagery; set the values in the Render dashboard.
+      - key: GOOGLE_MAPS_API_KEY
+        sync: false
+      - key: CESIUM_ION_TOKEN
+        sync: false
+    # The free plan has no persistent disk, so .cache/ is wiped on each deploy
+    # or restart. On a paid plan, uncomment this to keep the cache:
+    # disk:
+    #   name: cache
+    #   mountPath: /var/data
+    #   sizeGB: 1
+    # and add an env var CACHE_DIR=/var/data
