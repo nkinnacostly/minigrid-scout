@@ -74,6 +74,12 @@ Keys stay on your machine: the browser never sees the Google key, because tiles 
 
 All are free public services. They can be slow or briefly unavailable; the app retries and caches every answer. Attribution is shown in the app and must stay visible if you publish it.
 
+## Hosting it
+
+The app needs a Node server for its API, so static hosts like Vercel or Netlify won't work on their own. `render.yaml` sets it up on [Render](https://render.com): create a new Blueprint from this repo, and it builds with `npm run build` and starts with `npm start` (`server.js`).
+
+On Render's free plan the `.cache/` folder is wiped on every deploy or restart, and the service sleeps when idle, so the first LGA ranked afterwards is slow again. A paid plan with a disk (see the comment in `render.yaml`) keeps the cache.
+
 ## For developers
 
 ```bash
