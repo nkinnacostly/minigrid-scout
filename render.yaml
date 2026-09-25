@@ -3,6 +3,7 @@ services:
     name: minigrid-scout
     runtime: node
     plan: free
+    region: frankfurt
     buildCommand: npm ci && npm run build
     startCommand: npm start
     healthCheckPath: /

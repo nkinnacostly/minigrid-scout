@@ -46,7 +46,8 @@ function updateDetailNote() {
   const locked = app.missingImagery?.[0];
   let advice = 'This is about as sharp as free imagery gets here.';
   if (sharper) advice = `${esc(sharper.label)} goes closer.`;
-  else if (locked) advice = `${esc(locked.label)} goes closer, but needs <code>${esc(locked.needs)}</code> in <code>.env</code>.`;
+  else if (locked && import.meta.env.DEV) advice = `${esc(locked.label)} goes closer, but needs <code>${esc(locked.needs)}</code> in <code>.env</code>.`;
+  else if (locked) advice = `${esc(locked.label)} goes closer, but isn't available on this site.`;
   ui.detailNote.innerHTML = `You're closer than ${esc(option.label)} has detail for, so the picture won't get sharper. ${advice}`;
 }
 
@@ -75,7 +76,8 @@ async function loadImageryOptions() {
     let saved = null;
     try { saved = localStorage.getItem(IMAGERY_CHOICE); } catch { /* private mode */ }
     chooseImagery(saved || 'esri');
-    if (body.missing.length) {
+    // Setup hints are for whoever runs the app; visitors to a hosted copy can't act on them.
+    if (body.missing.length && import.meta.env.DEV) {
       ui.imageryNote.innerHTML += `<br>${body.missing.map((m) => `${esc(m.label)} needs <code>${esc(m.needs)}</code> in <code>.env</code>`).join('. ')}.`;
     }
   } catch (err) {
